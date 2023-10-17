@@ -12,12 +12,19 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+@app.route("/target/<string:id>")
+async def target(id):
+    pass
+
+@app.errorhandler(404)
+def wrong_lever():
+    return f"Wrong URL Kronk! 404."
 
 @app.route("/scan")
 async def scan():
     result_html = ""
     for result in await pyatv.scan(loop=asyncio.get_event_loop()):
-        result_html += str(f"<h3>{result.name}</h3><p><b>IP Address: </b>{result.address}</p><p><b>ID: </b>{result.identifier}</p><br><br>")
+        result_html += str(f"<h3>{result.name}</h3><a href=/target/{result.identifier}>Pull the lever Kronk!</a><p><b>IP Address: </b>{result.address}</p><p><b>ID: </b>{result.identifier}</p><br><br>")
     return render_template("scanner.html", results=result_html)
 
 app.run("localhost", 8080)
