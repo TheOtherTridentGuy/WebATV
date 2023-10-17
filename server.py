@@ -12,12 +12,12 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+
 @app.route("/scan")
 async def scan():
     result_html = ""
     for result in await pyatv.scan(loop=asyncio.get_event_loop()):
-        result_html += f"<div>Name: {result.name} Address: {result.address}</div>"
+        result_html += str(f"<h3>{result.name}</h3><p><b>IP Address: </b>{result.address}</p><p><b>ID: </b>{result.identifier}</p><br><br>")
     return render_template("scanner.html", results=result_html)
-
 
 app.run("localhost", 8080)

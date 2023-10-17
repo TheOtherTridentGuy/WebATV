@@ -9,8 +9,6 @@
 <body>
     <h1>WebATV Scanner</h1>
     <hr>
-    <div id="scanresults">
-        {{ results }}
-    </div>
+    <div id="scanresults">{{ results|safe }}</div>
 </body>
 </html>
