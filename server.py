@@ -1,11 +1,11 @@
 # pylint: disable-all
 # Note that I'm using flask with async. Install with: pip install "Flask[async]"
-from flask import Flask, Request, render_template
+from quart import Quart, Request, render_template
 import pyatv
 import asyncio
 
 
-app = Flask(__name__)
+app = Quart(__name__)
 
 
 @app.route("/")
