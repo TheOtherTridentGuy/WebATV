@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebATV - Scanner</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
+    <style>
+        * {font-family: 'Courier New', Courier, monospace;}
+    </style>
 </head>
 <body>
     <h1>WebATV Scanner</h1>
-    <hr>
+    <hr style="border: 2px solid black;">
     <div id="scanresults">{{ results|safe }}</div>
 </body>
 </html>
