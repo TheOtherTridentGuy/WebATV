@@ -17,8 +17,8 @@ async def mission_control(id):
     pass
 
 @app.errorhandler(404)
-def wrong_lever():
-    return "Wrong URL Kronk! 404."
+def wrong_lever(e):
+    return render_template("text.html", text="Wrong URL Kronk! 404.")
 
 @app.route("/scan")
 async def scan():
