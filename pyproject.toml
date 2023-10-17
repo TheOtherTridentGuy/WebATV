@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "webatv"
 version = "0.1.0"
-description = ""
+description = "Interact with apple tvs over web"
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
