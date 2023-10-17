@@ -28,7 +28,6 @@ hr {
 }
 .flexcontainer {
     display: flex;
-    overflow: scroll;
 } 
 .flexcontainer > div {
     text-align: center;
