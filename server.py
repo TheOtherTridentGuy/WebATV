@@ -12,19 +12,27 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-@app.route("/target/<string:id>")
-async def target(id):
+@app.route("/missioncontrol/<string:id>")
+async def mission_control(id):
     pass
 
 @app.errorhandler(404)
 def wrong_lever():
-    return f"Wrong URL Kronk! 404."
+    return "Wrong URL Kronk! 404."
 
 @app.route("/scan")
 async def scan():
     result_html = ""
+    n = "\n"
     for result in await pyatv.scan(loop=asyncio.get_event_loop()):
-        result_html += str(f"<h3>{result.name}</h3><a href=/target/{result.identifier}>Pull the lever Kronk!</a><p><b>IP Address: </b>{result.address}</p><p><b>ID: </b>{result.identifier}</p><br><br>")
-    return render_template("scanner.html", results=result_html)
+        result_html += str(f"""
+<h3>{result.name}</h3>
+<br>
+<p>{str(result).replace(n, "<br>")}</p>
+<a href="/missioncontrol/{result.identifier}">Mission Control<a>
+""")
+    if result_html:
+        return render_template("scanner.html", results=result_html)
+    return render_template("scanner.html", results="<h3>There are no Apple TVs on your network.</h3><a href='/'>Go Home</a>")
 
 app.run("localhost", 8080)
