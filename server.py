@@ -1,5 +1,4 @@
 # pylint: disable-all
-# Note that I'm using flask with async. Install with: pip install "Flask[async]"
 from quart import Quart, Request, render_template, abort
 import pyatv
 import asyncio
@@ -13,11 +12,12 @@ cache = {}
 async def index():
     return await render_template("index.html")
 
-@app.route("/control/<string:id>")
+@app.route("/control/<string:id>")    
 async def control(id):
     global cache
     atv = cache.get(id)
     if atv:
+        print (atv.name)
         return await render_template("control.html", name=atv.name, data=str(atv).replace("\n", "<br>"))
     return await render_template("error.html", textual="Apple TV", code=404)
 
