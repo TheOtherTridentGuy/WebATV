@@ -38,6 +38,6 @@ async def scan():
 """)
     if result_html:
         return await render_template("scanner.html", results=result_html)
-    return render_template("scanner.html", results="<h3>There are no Apple TVs on your network.</h3><a href='/'>Go Home</a>")
+    return await render_template("scanner.html", results="<h3>There are no Apple TVs on your network.</h3><a href='/'>Go Home</a>")
 
 app.run("localhost", 8080)
