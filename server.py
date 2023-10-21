@@ -9,44 +9,36 @@ from random import randint
 
 app = Quart(__name__)
 cache = {}
+pairs = {}
+pairs_in_progress = {}
 
-async def ignore(tv):
-    pair = await pyatv.pair(appletv, pyatv.const.Protocol.AirPlay, asyncio.get_event_loop())
-
-async def connect(appletv):
-    print("connection start")
-    pair = await pyatv.pair(appletv, pyatv.const.Protocol.AirPlay, asyncio.get_event_loop())
-    await pair.begin()
-    if pair.device_provides_pin:
-        pair.pin(int(input("Enter pin:")))
-    else:
-        pin = randint(1000,9999)
-        pair.pin(pin) # wait lets try this for now
-    await pair.finish()
-    print(await appletv.stream.play_url("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
-     
 
 @app.route("/")
 async def index():
     return await render_template("index.html")
 
-@app.route("/control/<string:id>")
-async def control(id):
-    global cache
-    atv = cache.get(id)
-    if atv:
-        print (atv.name)
-        return await render_template("control.html", name=atv.name, data=str(atv).replace("\n", "<br>"))
-    return await render_template("error.html", textual="Apple TV", code=404)
+@app.route("/beginpair/<string:id>")
+async def begin_pair(id):
+    tv = cache.get(id)
+    if tv:
+        pair = await pyatv.pair(tv, pyatv.const.Protocol.AirPlay, asyncio.get_event_loop())
+        await pair.begin()
+        pairs_in_progress[id] = [pair, tv]
+    return "TV Not in cache.", 404
+
+@app.route("/finishpair/<string:id>")
+async def finish_pair(id):
+    pair = pairs_in_progress.get(id)
+    pin = Request.values.get("pin")
+    if pair and pin:
+        await pair[0].pin(pin) # index 0 is the pair object
+        await pair[0].finish()
+        pairs[id] = pair[1] # index 1 is the tv itself
+    return "TV Has not yet started pair or you didn't provide a pin.", 404
 
 @app.errorhandler(404)
 async def wrong_lever(e):
     return await render_template("error.html", textual="URL", code=404)
-
-@app.route("/control/<string:id>/<string:action>")
-async def action(id, action):
-    await connect(cache[id])
-    return("d")
 
 @app.route("/scan")
 async def scan():
@@ -55,7 +47,17 @@ async def scan():
     n = "\n"
     for result in await pyatv.scan(loop=asyncio.get_event_loop()):
         cache[result.identifier] = result
-        result_html += str(f"""{cache[result.identifier].name}<br>{str(cache[result.identifier]).replace(n, "<br>")}<br><a href="/control/{cache[result.identifier].identifier}/connect"<button>Turn On</button></a><hr>""")
+        result_html += str(f"""
+    <div>
+        {result.name}
+        <br>
+        {str(result).replace(n, "<br>")}
+        <br>
+        <div>
+            <button onclick="begin_pair('id', this.parentElement)">Pair</button>
+        </div>
+        <hr>
+    </div>""")
     if result_html:
         return await render_template("scanner.html", results=result_html)
     return await render_template("scanner.html", results="<h3>There are no Apple TVs on your network.</h3><a href='/'>Go Home</a>")

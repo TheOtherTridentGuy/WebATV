@@ -13,5 +13,30 @@
     <h1>WebATV Scanner</h1>
     <hr style="border: 2px solid black;">
     <div id="scanresults">{{ results|safe }}</div>
+    <script>
+        function begin_pair(id, element){
+            [status, text] = get("/beginpair/"+id);
+            element.innerHTML = `<input type="text" name="pin" style="display: inline;" placeholder="Pairing Pin"><button onclick="finish_pair('`+id+`', this)">Finish Pair</button>`;
+            if (status == 200){
+                element.innerHTML = `<input type="text" name="pin" style="display: inline;" placeholder="Pairing Pin"><button onclick="finish_pair('`+id+`', this)">Finish Pair</button>`;
+            }
+        }
+
+        function finish_pair(id, element){
+            alert("finishing pair");
+            [status, text] = get("/finishpair/"+id+"?pin="+element.value);
+            element.parentElement.innerHTML = "Paired";
+            if (status == 200){
+                element.parentElement.innerHTML = "Paired";
+            }
+        }
+
+        function get(url){
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', url, false);
+            xhr.send();
+            return [xhr.status, xhr.responseText]
+        }
+    </script>
 </body>
 </html>
