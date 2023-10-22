@@ -1,5 +1,6 @@
 # pylint: disable-all
 from quart import Quart, Request, render_template
+from werkzeug.exceptions import HTTPException
 import pyatv
 import asyncio
 import json
@@ -36,9 +37,38 @@ async def finish_pair(id):
         pairs[id] = pair[1] # index 1 is the tv itself
     return "TV Has not yet started pair or you didn't provide a pin.", 404
 
-@app.errorhandler(404)
+# hi?
+# anyone there?
+# I'm working on a better error handler
+# Cool
+# error texts are in a hash table? I see
+
+
+@app.errorhandler(Exception)
 async def wrong_lever(e):
-    return await render_template("error.html", textual="URL", code=404)
+    # The hash table:
+    # aww, i gotta go, have fun with 
+    #how bout i commit and u fork
+    # u can use codespaces if your not on a good computer
+    #can you leave it open
+    # and make a new terminal so i can run the server
+
+    # Okay
+    
+    errors = {
+        "400": "request",
+        "401": "user",
+        "402": "price", # its for payment required idk what to put should i delete?
+        "403": "permissions",
+        "404": "url"
+        "405": "method"
+        "406"
+    }
+    if isinstance(e, HTTPException):
+        print()
+        return await render_template("error.html", textual=errors.get(str(e.code), default="something"), code=e.code)
+    print(e)
+    return await render_template("error.html", textual="server code", code=500)
 
 @app.route("/scan")
 async def scan():
