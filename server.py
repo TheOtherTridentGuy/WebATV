@@ -62,10 +62,13 @@ if e == 402:
         "400": "request",
         "401": "user",, # its for payment required idk what to put should i delete?
         "403": "permissions",
-        "404": "url",
-        "405": "method",
-        "406": "something"
+        "404": "url"
+        "405": "method"
+        "406"
     }
+    if isinstance(e, HTTPException):
+        print()
+        return await render_template("error.html", textual=errors.get(str(e.code), default="something"), code=e.code)
     print(e)
     return await render_template("error.html", textual="server code", code=500)
 
