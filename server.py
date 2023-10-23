@@ -66,9 +66,6 @@ if e == 402:
         "405": "method",
         "406": "something"
     }
-    if isinstance(e, HTTPException):
-        print()
-        return await render_template("error.html", textual=errors.get(str(e.code), default="something"), code=e.code)
     print(e)
     return await render_template("error.html", textual="server code", code=500)
 
