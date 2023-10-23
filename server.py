@@ -55,14 +55,16 @@ async def wrong_lever(e):
 
     # Okay
     
+if e == 402:
+    return("Stop being poor, Kronk! 402 Error")
+
     errors = {
         "400": "request",
-        "401": "user",
-        "402": "price", # its for payment required idk what to put should i delete?
+        "401": "user",, # its for payment required idk what to put should i delete?
         "403": "permissions",
-        "404": "url"
-        "405": "method"
-        "406"
+        "404": "url",
+        "405": "method",
+        "406": "something"
     }
     if isinstance(e, HTTPException):
         print()
@@ -84,7 +86,7 @@ async def scan():
         {str(result).replace(n, "<br>")}
         <br>
         <div>
-            <button onclick="begin_pair('id', this.parentElement)">Pair</button>
+            <button onclick="begin_pair('{result.identifier}', this.parentElement)">Pair</button>
         </div>
         <hr>
     </div>""")
