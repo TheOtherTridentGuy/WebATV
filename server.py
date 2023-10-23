@@ -39,23 +39,17 @@ async def finish_pair(id, pin):
 
 @app.errorhandler(Exception)
 async def wrong_lever(e):
-    # The hash table:
-    # aww, i gotta go, have fun with 
-    #how bout i commit and u fork
-    # u can use codespaces if your not on a good computer
-    #can you leave it open
-    # and make a new terminal so i can run the server
-
-    # Okay
-    
     errors = {
         "400": "request",
         "401": "user",
-        "402": "price", # its for payment required idk what to put should i delete?
+        "402": "price",
         "403": "permissions",
         "404": "url",
         "405": "method",
-        "406": ""
+        "407": "proxy",
+        "415": "media type",
+        "418": "pot type",
+        "451": "subpoena"
     }
     if isinstance(e, HTTPException):
         print()
