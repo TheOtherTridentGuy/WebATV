@@ -10,7 +10,7 @@ from random import randint
 
 app = Quart(__name__)
 cache = {}
-pairs = {}
+authed_tvs = {}
 pairs_in_progress = {}
 
 
@@ -27,21 +27,14 @@ async def begin_pair(id):
         pairs_in_progress[id] = [pair, tv]
     return "TV Not in cache.", 404
 
-@app.route("/finishpair/<string:id>")
-async def finish_pair(id):
+@app.route("/finishpair/<string:id>/<int:pin>")
+async def finish_pair(id, pin):
     pair = pairs_in_progress.get(id)
-    pin = Request.values.get("pin")
     if pair and pin:
         await pair[0].pin(pin) # index 0 is the pair object
         await pair[0].finish()
-        pairs[id] = pair[1] # index 1 is the tv itself
+        authed_tvs[id] = pair[1] # index 1 is the tv itself
     return "TV Has not yet started pair or you didn't provide a pin.", 404
-
-# hi?
-# anyone there?
-# I'm working on a better error handler
-# Cool
-# error texts are in a hash table? I see
 
 
 @app.errorhandler(Exception)
@@ -55,16 +48,14 @@ async def wrong_lever(e):
 
     # Okay
     
-if e == 402:
-    return("Stop being poor, Kronk! 402 Error")
-
     errors = {
         "400": "request",
-        "401": "user",, # its for payment required idk what to put should i delete?
+        "401": "user",
+        "402": "price", # its for payment required idk what to put should i delete?
         "403": "permissions",
-        "404": "url"
-        "405": "method"
-        "406"
+        "404": "url",
+        "405": "method",
+        "406": ""
     }
     if isinstance(e, HTTPException):
         print()
