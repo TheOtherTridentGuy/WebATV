@@ -20,20 +20,29 @@ async def index():
 
 @app.route("/beginpair/<string:id>")
 async def begin_pair(id):
-    tv = cache.get(id)
+    global cache
+    tv = cache.get(str(id))
     if tv:
+        pyatv
         pair = await pyatv.pair(tv, pyatv.const.Protocol.AirPlay, asyncio.get_event_loop())
         await pair.begin()
         pairs_in_progress[id] = [pair, tv]
+        return "Done!", 200
     return "TV Not in cache.", 404
 
 @app.route("/finishpair/<string:id>/<int:pin>")
 async def finish_pair(id, pin):
+    print("finish")
+    print(id, pin)
     pair = pairs_in_progress.get(id)
+    print(pair)
     if pair and pin:
-        await pair[0].pin(pin) # index 0 is the pair object
+        print("pairing...")
+        pair[0].pin(pin) # index 0 is the pair object
         await pair[0].finish()
         authed_tvs[id] = pair[1] # index 1 is the tv itself
+        await pyatv.interface.Stream.play_url(pair[1], "damage.mp4")
+        return "Done!", 200
     return "TV Has not yet started pair or you didn't provide a pin.", 404
 
 
@@ -53,7 +62,7 @@ async def wrong_lever(e):
     }
     if isinstance(e, HTTPException):
         print()
-        return await render_template("error.html", textual=errors.get(str(e.code), default="something"), code=e.code)
+        return await render_template("error.html", textual=errors.get(str(e.code)), code=e.code)
     print(e)
     return await render_template("error.html", textual="server code", code=500)
 
@@ -79,4 +88,4 @@ async def scan():
         return await render_template("scanner.html", results=result_html)
     return await render_template("scanner.html", results="<h3>There are no Apple TVs on your network.</h3><a href='/'>Go Home</a>")
 
-app.run("localhost", 8080)
+app.run("0.0.0.0", 8080)
