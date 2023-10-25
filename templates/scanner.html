@@ -16,15 +16,15 @@
     <script>
         function begin_pair(id, element){
             element.innerHTML = "Pairing..."
-            [status, text] = get("/beginpair/"+id);
+            var [status, text] = get("/beginpair/"+id);
             if (status == 200){
-                element.innerHTML = `<input type="text" name="pin" style="display: inline;" placeholder="Pairing Pin"><button onclick="finish_pair('`+id+`', this)">Finish Pair</button>`;
+                element.innerHTML = `<input type="text" name="pin" style="display: inline;" placeholder="Pairing Pin"><button onclick="finish_pair('`+id+`', this.previousSibling)">Finish Pair</button>`;
             }
         }
 
         function finish_pair(id, element){
             element.parentElement.innerHTML = "Pairing..."
-            [status, text] = get("/finishpair/"+id+"/"+element.value);
+            var [status, text] = get("/finishpair/"+id+"/"+element.value);
             if (status == 200){
                 element.parentElement.innerHTML = "Paired";
             }
